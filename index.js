@@ -121,17 +121,39 @@
 ////////////////// Mongo db Sepreate file connection //////////////////
 ////////////////// Mongoose Validations ////////////////
 const mongoose = require('mongoose');
-const main = async() => {
-    await mongoose.connect("mongodb://localhost:27017/e-comm");
-    const ProductSchema =  new mongoose.Schema({
-        name:String,
-        price:Number,
-        brand:String,
-        category:String
-    });
-    const ProductsModel = mongoose.model('products',ProductSchema);
-    let data = new ProductsModel({name:"m10",price:1000,brand:"MicroMax",category:"Mobile"});
+mongoose.connect("mongodb://localhost:27017/e-comm");
+const productSchema =  new mongoose.Schema({
+    name:String,
+    price:Number,
+    brand:String,
+    category:String
+});
+
+const saveInDB = async() => {   
+    const Products = mongoose.model('products',productSchema);
+    let data = new Products({name:"m10",price:1000,brand:"MicroMax",category:"Mobile"});
     let result  = await data.save();
     console.log(result);
 }
-main()
+const updateDB= async ()=>{
+    const Product = await mongoose.model('products',productSchema);
+    let data = await Product.updateOne(
+        { name:"Max 5" },
+        {
+            $set : {
+                price:700
+            }
+        }
+    );
+    console.log(data);
+}
+
+
+const deleteInDB = async () => {
+    const Product = await mongoose.model('products',productSchema);
+    let data = await Product.deleteOne({
+        name:'m40'
+    })
+}
+updateDB();
+deleteInDB();
