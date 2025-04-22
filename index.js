@@ -232,30 +232,50 @@
 // // console.log(os.freemem()/(1024*1024*1024))
 // // console.log(os.totalmem()/(1024*1024*1024))
 // console.log(os.userInfo())
-const express = require('express');
-const EventEmitter = require("events");
-const app = express();
+// const express = require('express');
+// const EventEmitter = require("events");
+// const app = express();
 
-let count = 0;
+// let count = 0;
 
-const event = new EventEmitter();
+// const event = new EventEmitter();
 
-event.on("countAPI",()=>{
-    console.log("Hello Event Called");
-    count++;
-    console.log("Event Called",count);
-})
+// event.on("countAPI",()=>{
+//     console.log("Hello Event Called");
+//     count++;
+//     console.log("Event Called",count);
+// })
 
-app.get("/",(req,resp)=>{
-    resp.send("api called");
-    event.emit("countAPI");
+// app.get("/",(req,resp)=>{
+//     resp.send("api called");
+//     event.emit("countAPI");
+// })
+// app.get("/search",(req,resp)=>{
+//     resp.send("search api called");
+//     event.emit("countAPI");
+// })
+// app.get("/update",(req,resp)=>{
+//     resp.send("update api called");
+//     event.emit("countAPI");
+// })
+// app.listen(5000);
+const mysql = require('mysql');
+const con = mysql.createConnection(
+    {
+        host:'localhost',
+        user:"root",
+        password:"",
+        database:"test"
+    }
+)
+con.connect((err)=>{
+    if(err){
+        console.warn("error");
+    }
+    else{
+        console.warn("connected")
+    }
 })
-app.get("/search",(req,resp)=>{
-    resp.send("search api called");
-    event.emit("countAPI");
+con.query("select * from users",(error,result)=>{
+    console.warn("result",result)
 })
-app.get("/update",(req,resp)=>{
-    resp.send("update api called");
-    event.emit("countAPI");
-})
-app.listen(5000);
