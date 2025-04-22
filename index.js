@@ -208,22 +208,54 @@
 //     )
 //     resp.send(data);
 // });
+// const express = require('express');
+// const multer = require('multer');
+// const app = express();
+
+// const upload = multer({
+//     storage:multer.diskStorage({
+//         destination:function(req,file,cb){
+//             cb(null,"uploads")
+//         },
+//         filename:function(req,file,cb)
+//         {
+//             cb(null,file.fieldname+"_"+Date.now()+".jpg")
+//         }
+//     })
+// }).single("user_file");
+// app.post('/upload',upload,(req,resp)=>{
+//     resp.send('file upload');
+// })
+// app.listen(5000);
+// const os = require('os');
+// //console.log(os.arch())
+// // console.log(os.freemem()/(1024*1024*1024))
+// // console.log(os.totalmem()/(1024*1024*1024))
+// console.log(os.userInfo())
 const express = require('express');
-const multer = require('multer');
+const EventEmitter = require("events");
 const app = express();
 
-const upload = multer({
-    storage:multer.diskStorage({
-        destination:function(req,file,cb){
-            cb(null,"uploads")
-        },
-        filename:function(req,file,cb)
-        {
-            cb(null,file.fieldname+"_"+Date.now()+".jpg")
-        }
-    })
-}).single("user_file");
-app.post('/upload',upload,(req,resp)=>{
-    resp.send('file upload');
+let count = 0;
+
+const event = new EventEmitter();
+
+event.on("countAPI",()=>{
+    console.log("Hello Event Called");
+    count++;
+    console.log("Event Called",count);
+})
+
+app.get("/",(req,resp)=>{
+    resp.send("api called");
+    event.emit("countAPI");
+})
+app.get("/search",(req,resp)=>{
+    resp.send("search api called");
+    event.emit("countAPI");
+})
+app.get("/update",(req,resp)=>{
+    resp.send("update api called");
+    event.emit("countAPI");
 })
 app.listen(5000);
